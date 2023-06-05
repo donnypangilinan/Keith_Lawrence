@@ -1,0 +1,160 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_ITEMS 100
+#define FILE_NAME "inventory.txt" // Define the file name here
+
+struct Item {
+    char name[20];
+    int quantity;
+};
+
+struct Item inventory[MAX_ITEMS];
+int num_items = 0;
+
+void add_item() {
+    if (num_items >= MAX_ITEMS) {
+        printf("Inventory is full.\n");
+        return;
+    }
+
+    struct Item new_item;
+
+    printf("Enter item name: ");
+    scanf("%s", new_item.name);
+
+    printf("Enter quantity: ");
+    scanf("%d", &new_item.quantity);
+
+    inventory[num_items] = new_item;
+    num_items++;
+
+    printf("Item added successfully.\n");
+}
+
+void delete_item() {
+    char name[20];
+
+    printf("Enter item name to delete: ");
+    scanf("%s", name);
+
+    for (int i = 0; i < num_items; i++) {
+        if (strcmp(name, inventory[i].name) == 0) {
+            for (int j = i; j < num_items - 1; j++) {
+                inventory[j] = inventory[j + 1];
+            }
+            num_items--;
+            printf("Item deleted successfully.\n");
+            return;
+        }
+    }
+
+    printf("Item not found.\n");
+}
+
+void display_inventory() {
+    printf("Inventory:\n");
+    printf("%-20s %s\n", "Name:", "Quantity:\n");
+
+    for (int i = 0; i < num_items; i++) {
+        printf("%-20s %d\n", inventory[i].name, inventory[i].quantity);
+    }
+}
+
+void search_item() {
+    char name[20];
+
+    printf("Enter item name to search for: ");
+    scanf("%s", name);
+
+    for (int i = 0; i < num_items; i++) {
+        if (strcmp(name, inventory[i].name) == 0) {
+            printf("%-20s %d\n", inventory[i].name, inventory[i].quantity);
+            return;
+        }
+    }
+
+    printf("Item not found.\n");
+}
+
+void load_inventory_from_file() {
+    FILE *file = fopen(FILE_NAME, "r");
+
+    if (file == NULL) {
+        printf("Failed to open file for reading.\n");
+        return;
+    }
+
+    num_items = 0;
+    struct Item item;
+
+    while (fscanf(file, "%[^,],%d\n", item.name, &item.quantity) == 2) {
+        inventory[num_items++] = item;
+    }
+
+    fclose(file);
+
+    printf("Inventory loaded from file.\n");
+}
+
+int main() {
+    printf("╔══════════════════════════════════════╗\n");
+    printf("║         WELCOME TO WEBMASTERS        ║\n");
+    printf("║      INVENTORY MANAGEMENT SYSTEM     ║\n");
+    printf("╚══════════════════════════════════════╝\n\n");
+
+    int choice;
+
+    do {
+        printf("Menu:\n");
+        printf("════════════════════════════════════════\n");
+        printf("1. Add item\n");
+        printf("2. Delete item\n");
+        printf("3. Display inventory\n");
+        printf("4. Search item\n");
+        printf("5. Load inventory from file\n");
+        printf("6. Exit\n");
+        printf("════════════════════════════════════════\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("\n");
+                add_item();
+                printf("\n");
+                break;
+            case 2:
+                printf("\n");
+                delete_item();
+                printf("\n");
+                break;
+            case 3:
+                printf("\n");
+                display_inventory();
+                printf("\n");
+                break;
+            case 4:
+                printf("\n");
+                search_item();
+                printf("\n");
+                break;
+            case 5:
+                printf("\n");
+                load_inventory_from_file();
+                printf("\n");
+                break;
+            case 6:
+                printf("\n");
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("\n");
+                printf("Invalid choice.\n");
+                printf("\n");
+                break;
+        }
+    } while (choice != 6);
+
+    return 0;
+}
